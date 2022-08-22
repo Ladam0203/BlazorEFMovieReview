@@ -4,10 +4,11 @@
 
 @using Entities
 @inject IRepository _repository
+@inject IValidator<Movie> _movieValidator
 
 
 
-    <table class="table">
+<table class="table">
         <thead>
         <tr>
             <th>Title</th>
@@ -86,19 +87,17 @@
 
     private async Task AddMovie()
     {
-        if(!String.IsNullOrWhiteSpace(MovieTitle)  && 
-           !String.IsNullOrWhiteSpace(MovieSummary))
+        Movie movie = new Movie()
         {
-            Movie movie = new Movie()
-            {
-                Title = MovieTitle,
-                Summary = MovieSummary,
-                ReleaseYear = ReleaseYear,
-                BoxOfficeSumInMillions = BoxOfficeEarnings
-            };
+            Title = MovieTitle,
+            Summary = MovieSummary,
+            ReleaseYear = ReleaseYear,
+            BoxOfficeSumInMillions = BoxOfficeEarnings
+        };
+        if (_movieValidator.Validate(movie).Success)
+        {
             _movies.Add(_repository.AddMovie(movie));
         }
-        
     }
 
 }
